@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎲 MarcelCTG | GameZone HQ Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0d0d0d;
+      font-family: 'Rajdhani', sans-serif;
+      color: #fff;
+    }
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #00f0ff, #ff00c8);
+      color: #000;
+      box-shadow: 0 0 30px #00f0ff88;
+    }
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      text-shadow: 0 0 10px #000000aa;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .event {
+      background: #1a1a1a;
+      border: 2px solid #2e2e2e;
+      border-left: 6px solid #00ffff;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 12px #00ffff33;
+      transition: transform 0.3s ease, border-color 0.3s;
+    }
+    .event.ended {
+      opacity: 0.5;
+      border-left-color: #888;
+    }
+    .event:hover {
+      transform: scale(1.02);
+      border-left-color: #ff00c8;
+    }
+    .event h2 {
+      font-size: 1.8rem;
+      color: #00ffff;
+      margin-bottom: 10px;
+    }
+    .event-date {
+      color: #ff00c8;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .countdown {
+      font-size: 1rem;
+      color: #ffcc00;
+      margin-bottom: 10px;
+    }
+    .event p {
+      color: #ccc;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #00ffff, #ff00c8);
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 10px #00ffffaa;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px #ff00c8cc;
+    }
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #121212;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #222;
+    }
+    .audio-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1a1a1a;
+      border: 2px solid #00ffff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px #00ffff88;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    .audio-button:hover {
+      box-shadow: 0 0 20px #ff00c8aa;
+    }
+    .audio-controls {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #1a1a1a;
+      padding: 10px;
+      border: 2px solid #00ffff;
+      border-radius: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .audio-controls input[type="range"] {
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎲 MarcelCTG // 🎮 GameZone HQ 🎧</h1>
+    <p style="font-size: 1.1rem; font-weight: bold;">Event-Zentrale · Let’s go!</p>
+  </header>
+
+  <div class="container">
+    <div class="event" id="event1">
+      <div class="event-date">📅 21. Juni 2025 – 18:00 Uhr</div>
+      <div class="countdown" id="countdown1"></div>
+      <h2>🎮 Game Night XXL</h2>
+      <p>Join der Crew für ein wildes Matchup: Valorant, Minecraft, Rocket League und mehr – mit Voice & Vibes!</p>
+      <a href="https://discord.gg/DEIN-LINK-1" class="btn" target="_blank">👾 Beitreten</a>
+    </div>
+
+    <div class="event" id="event2">
+      <div class="event-date">📅 23. Juni 2025 – 20:00 Uhr</div>
+      <div class="countdown" id="countdown2"></div>
+      <h2>🎤 Talk & Chill</h2>
+      <p>Entspannter Talk-Abend mit Musik, Storytime, und Free-Talks. Einfach reinspringen & dabeisein!</p>
+      <a href="https://discord.gg/DEIN-LINK-2" class="btn" target="_blank">🎧 Join Talk</a>
+    </div>
+
+    <div class="event" id="event3">
+      <div class="event-date">📅 25. Juni 2025 – 19:30 Uhr</div>
+      <div class="countdown" id="countdown3"></div>
+      <h2>🎉 Server Jubiläum 2.0</h2>
+      <p>Ein Jahr voller Community-Momente. Gewinne, Musik, Giveaways – sei ein Teil der Geschichte!</p>
+      <a href="https://discord.gg/DEIN-LINK-3" class="btn" target="_blank">🎊 Event beitreten</a>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 🎲 MarcelCTG | GameZone HQ · Powered by Discord Vibes
+  </footer>
+
+  <div class="audio-button" onclick="toggleAudioControls()">🎵</div>
+  <div class="audio-controls" id="audioControls">
+    <button onclick="togglePlayPause()" id="playPauseBtn">⏸️</button>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.35">
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const audio = document.getElementById('bgMusic');
+    const controls = document.getElementById('audioControls');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    window.addEventListener('load', () => {
+      audio.volume = 0.35;
+      audio.play().catch(() => {}); // autoplay may be blocked
+    });
+
+    function toggleAudioControls() {
+      controls.style.display = controls.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function togglePlayPause() {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = '⏸️';
+      } else {
+        audio.pause();
+        playPauseBtn.textContent = '▶️';
+      }
+    }
+
+    volumeSlider.addEventListener('input', () => {
+      audio.volume = volumeSlider.value;
+    });
+
+    function startCountdown(id, dateStr, eventId) {
+      const countdownEl = document.getElementById(id);
+      const eventEl = document.getElementById(eventId);
+      const eventDate = new Date(dateStr);
+      function update() {
+        const now = new Date();
+        const diff = eventDate - now;
+        if (diff <= 0) {
+          const endedTime = eventDate.toLocaleString('de-DE', {
+            day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+          countdownEl.innerHTML = `🚀 Event gestartet · Endete am ${endedTime}`;
+          eventEl.classList.add('ended');
+          return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        countdownEl.innerHTML = `⏳ Beginnt in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+      update();
+      setInterval(update, 1000);
+    }
+
+    startCountdown("countdown1", "2025-06-21T18:00:00", "event1");
+    startCountdown("countdown2", "2025-06-23T20:00:00", "event2");
+    startCountdown("countdown3", "2025-06-25T19:30:00", "event3");
+  </script>
+</body>
+</html>
