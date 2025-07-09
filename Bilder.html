@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Geschützte Bildergalerie</title>
+  <title>Moderne Galerie mit Slideshow 💍</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4f4f4;
-      padding: 20px;
+      padding: 30px;
+      -webkit-user-drag: none;
+      user-select: none;
     }
 
     h1 {
       text-align: center;
+      font-size: 2rem;
       color: #333;
     }
 
@@ -25,60 +32,173 @@
     }
 
     .gallery-item {
-      position: relative;
       height: 200px;
       border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       background-size: cover;
       background-position: center;
-      cursor: default;
-      transition: transform 0.3s ease;
-      user-select: none;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      transition: transform 0.4s ease;
+      cursor: pointer;
     }
 
     .gallery-item:hover {
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
 
-    /* Optional: Overlay */
-    .gallery-item::after {
-      content: "";
-      position: absolute;
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      z-index: 999;
       top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
     }
 
-    .gallery-item:hover::after {
-      opacity: 1;
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 10px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.2);
+      animation: fadeIn 0.5s ease;
+    }
+
+    #close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+    }
+
+    .lightbox-controls {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 40px;
+      transform: translateY(-50%);
+    }
+
+    .lightbox-controls span {
+      color: white;
+      font-size: 3rem;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s;
+    }
+
+    .lightbox-controls span:hover {
+      color: #ff5e78;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
   <script>
-    // Rechtsklick blockieren
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    });
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
 
-    // Drag & Drop von Bildern verhindern
-    document.addEventListener('dragstart', function(e) {
-      e.preventDefault();
+    document.addEventListener('DOMContentLoaded', () => {
+      const images = [
+        'bilder/bild1.jpg',
+        'bilder/bild2.jpg',
+        'bilder/bild3.jpg',
+        'bilder/bild4.jpg',
+        'bilder/bild5.jpg'
+      ];
+
+      let currentIndex = 0;
+      let slideshowInterval = null;
+
+      const gallery = document.querySelector('.gallery');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+
+      // Galerie-Bilder erstellen
+      images.forEach((src, index) => {
+        const item = document.createElement('div');
+        item.classList.add('gallery-item');
+        item.style.backgroundImage = `url('${src}')`;
+        item.dataset.index = index;
+        gallery.appendChild(item);
+      });
+
+      gallery.addEventListener('click', (e) => {
+        const item = e.target.closest('.gallery-item');
+        if (!item) return;
+        currentIndex = parseInt(item.dataset.index);
+        showImage();
+        startSlideshow();
+      });
+
+      document.getElementById('close').addEventListener('click', () => {
+        lightbox.style.display = 'none';
+        stopSlideshow();
+      });
+
+      document.getElementById('prev').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        showImage();
+      });
+
+      document.getElementById('next').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        showImage();
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          lightbox.style.display = 'none';
+          stopSlideshow();
+        }
+      });
+
+      function showImage() {
+        lightboxImg.src = images[currentIndex];
+        lightbox.style.display = 'flex';
+      }
+
+      function startSlideshow() {
+        stopSlideshow();
+        slideshowInterval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          showImage();
+        }, 4000);
+      }
+
+      function stopSlideshow() {
+        if (slideshowInterval) {
+          clearInterval(slideshowInterval);
+          slideshowInterval = null;
+        }
+      }
     });
   </script>
 </head>
 <body>
 
-  <h1>Geschützte Bildergalerie</h1>
+  <h1>Meine Galerie 💍</h1>
 
-  <div class="gallery">
-    <div class="gallery-item" style="background-image: url('bilder/bild1.jpg');"></div>
-    <div class="gallery-item" style="background-image: url('bilder/bild2.jpg');"></div>
-    <div class="gallery-item" style="background-image: url('bilder/bild3.jpg');"></div>
-    <div class="gallery-item" style="background-image: url('bilder/bild4.jpg');"></div>
-    <div class="gallery-item" style="background-image: url('bilder/bild5.jpg');"></div>
+  <div class="gallery"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <span id="close">&times;</span>
+    <img id="lightbox-img" src="" alt="Großansicht">
+    <div class="lightbox-controls">
+      <span id="prev">&#10094;</span>
+      <span id="next">&#10095;</span>
+    </div>
   </div>
 
 </body>
 </html>
-
