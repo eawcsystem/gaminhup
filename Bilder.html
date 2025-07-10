@@ -3,83 +3,283 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Animierte Galerie 💫</title>
+  <title>Galerie</title>
   <style>
+    :root {
+      --bg: #0e0e0e;
+      --fg: #fff;
+      --overlay: rgba(0, 0, 0, 0.5);
+      --bar: #ff5e78;
+    }
+
+    [data-theme="light"] {
+      --bg: #f9f9f9;
+      --fg: #111;
+      --overlay: rgba(255, 255, 255, 0.7);
+      --bar: #1e90ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+
     body {
       margin: 0;
-      background-color: #111;
-      font-family: sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
       overflow: hidden;
-      -webkit-user-drag: none;
-      user-select: none;
+      transition: background 0.5s ease, color 0.5s ease;
+      padding: 10px;
     }
 
     .slideshow {
       position: relative;
-      width: 90%;
-      max-width: 800px;
-      height: 500px;
+      width: 100%;
+      max-width: 900px;
+      height: 60vh;
+      max-height: 80vh;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeSlideIn 1s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .slide {
       position: absolute;
       width: 100%;
       height: 100%;
-      opacity: 0;
       background-size: cover;
       background-position: center;
-      transition: opacity 1s ease-in-out;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      pointer-events: none;
     }
 
     .slide.active {
       opacity: 1;
       z-index: 1;
     }
+
+    .overlay-text {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+      right: 20px;
+      color: var(--fg);
+      background: var(--overlay);
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: clamp(1rem, 5vw, 2rem);
+      text-align: center;
+      animation: fadeInUp 1s ease both;
+    }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      background: var(--bar);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .countdown {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      background: var(--overlay);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .btn, select {
+      background: var(--overlay);
+      color: var(--fg);
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+
+    .btn:hover {
+      background: var(--bar);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .slideshow {
+        height: 70vh;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn, select {
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      .overlay-text {
+        font-size: 1.2rem;
+        padding: 10px 16px;
+      }
+
+      .countdown {
+        bottom: 8px;
+        right: 10px;
+        font-size: 0.9rem;
+      }
+    }
   </style>
-  <script>
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('dragstart', e => e.preventDefault());
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const images = [
-        'r6.png',
-        'gta.png',
-        'bilder/bild3.jpg',
-        'bilder/bild4.jpg',
-        'bilder/bild5.jpg'
-      ];
-
-      const container = document.querySelector('.slideshow');
-      let current = 0;
-
-      images.forEach((src, index) => {
-        const div = document.createElement('div');
-        div.classList.add('slide');
-        if (index === 0) div.classList.add('active');
-        div.style.backgroundImage = `url('${src}')`;
-        container.appendChild(div);
-      });
-
-      const slides = document.querySelectorAll('.slide');
-
-      setInterval(() => {
-        slides[current].classList.remove('active');
-        current = (current + 1) % slides.length;
-        slides[current].classList.add('active');
-      }, 4000);
-    });
-  </script>
 </head>
-<body>
-
+<body data-theme="dark" ontouchstart="" oncontextmenu="return false">
   <div class="slideshow"></div>
 
+  <div class="top-bar">
+    <button class="btn" id="themeToggle">🌞 Hell</button>
+    <select id="languageSelect">
+      <option value="de">🇩🇪 Deutsch</option>
+      <option value="en">🇬🇧 English</option>
+    </select>
+  </div>
+
+  <script>
+    document.addEventListener('dragstart', e => e.preventDefault());
+
+    const translations = {
+      de: { welcome: "Willkommen in der Galerie 💫" },
+      en: { welcome: "Welcome to the gallery 💫" }
+    };
+
+    let lang = localStorage.getItem("language") || "de";
+    let theme = localStorage.getItem("theme") || "dark";
+    document.body.setAttribute("data-theme", theme);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const images = [
+        { src: "r6.png", text: translations[lang].welcome },
+        { src: "gta.png" },
+        { src: "bilder/bild3.jpg" },
+        { src: "bilder/bild4.jpg" },
+        { src: "bilder/bild5.jpg" },
+      ];
+
+      const container = document.querySelector(".slideshow");
+      const progress = document.createElement("div");
+      progress.classList.add("progress-bar");
+      container.appendChild(progress);
+
+      const countdown = document.createElement("div");
+      countdown.classList.add("countdown");
+      container.appendChild(countdown);
+
+      let current = 0;
+      const slideDuration = 4000;
+      let slides = [];
+
+      images.forEach((img, index) => {
+        const slide = document.createElement("div");
+        slide.classList.add("slide");
+        if (index === 0) slide.classList.add("active");
+        slide.style.backgroundImage = `url('${img.src}')`;
+
+        if (img.text) {
+          const overlay = document.createElement("div");
+          overlay.classList.add("overlay-text");
+          overlay.textContent = img.text;
+          slide.appendChild(overlay);
+        }
+
+        container.appendChild(slide);
+        slides.push(slide);
+      });
+
+      function startProgress() {
+        progress.style.transition = "none";
+        progress.style.width = "0%";
+        setTimeout(() => {
+          progress.style.transition = `width ${slideDuration}ms linear`;
+          progress.style.width = "100%";
+        }, 50);
+      }
+
+      function startCountdown() {
+        let count = slideDuration / 1000;
+        countdown.textContent = count;
+        const interval = setInterval(() => {
+          count--;
+          countdown.textContent = count;
+          if (count <= 0) clearInterval(interval);
+        }, 1000);
+      }
+
+      function showNextSlide() {
+        slides[current].classList.remove("active");
+        current = (current + 1) % slides.length;
+        slides[current].classList.add("active");
+        startProgress();
+        startCountdown();
+      }
+
+      startProgress();
+      startCountdown();
+      setInterval(showNextSlide, slideDuration);
+
+      const themeBtn = document.getElementById("themeToggle");
+      themeBtn.addEventListener("click", () => {
+        theme = theme === "dark" ? "light" : "dark";
+        document.body.setAttribute("data-theme", theme);
+        themeBtn.textContent = theme === "dark" ? "🌞 Hell" : "🌙 Dunkel";
+        localStorage.setItem("theme", theme);
+      });
+
+      const langSelect = document.getElementById("languageSelect");
+      langSelect.value = lang;
+      langSelect.addEventListener("change", (e) => {
+        lang = e.target.value;
+        localStorage.setItem("language", lang);
+        slides[0].querySelector(".overlay-text").textContent = translations[lang].welcome;
+      });
+    });
+  </script>
 </body>
 </html>
