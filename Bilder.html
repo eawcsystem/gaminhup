@@ -3,255 +3,169 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Moderne Galerie</title>
+  <title>Netflix-Galerie mit Musik</title>
   <style>
-    :root {
-      --bg: #0e0e0e;
-      --fg: #fff;
-      --overlay: rgba(0, 0, 0, 0.5);
-      --bar: #ff5e78;
-    }
-    [data-theme="light"] {
-      --bg: #f9f9f9;
-      --fg: #111;
-      --overlay: rgba(255, 255, 255, 0.7);
-      --bar: #1e90ff;
-    }
     * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      user-select: none;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+      user-select: none;
     }
     body {
-      background: var(--bg);
-      color: var(--fg);
+      background-color: #141414;
       font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      padding: 10px;
-      transition: background 0.4s ease, color 0.4s ease;
+      color: #fff;
+      overflow-x: hidden;
     }
-    .slideshow {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-      height: 65vh;
-      background: var(--bg);
-      border-radius: 18px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      overflow: hidden;
-      animation: fadeIn 1s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .slide {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-color: var(--bg);
-      opacity: 0;
-      transition: opacity 1s ease;
-      pointer-events: none;
-    }
-    .slide.active {
-      opacity: 1;
-      z-index: 1;
-    }
-    .overlay-text {
-      position: absolute;
-      bottom: 30px;
-      left: 20px;
-      right: 20px;
-      color: var(--fg);
-      background: var(--overlay);
-      padding: 14px;
-      border-radius: 12px;
-      font-size: clamp(1.2rem, 4vw, 2rem);
+    header {
+      padding: 20px;
+      font-size: 2rem;
       text-align: center;
-      animation: slideUp 1s ease both;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .progress-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 5px;
-      background: var(--bar);
-      width: 0%;
-      transition: width 0.1s linear;
-    }
-    .countdown {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      background: var(--overlay);
-      padding: 6px 12px;
-      border-radius: 10px;
-      font-size: 1rem;
       font-weight: bold;
+      color: #e50914;
     }
-    .top-bar {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
-      display: flex;
-      gap: 10px;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      z-index: 2;
+    .gallery-container {
+      padding: 30px 20px;
     }
-    .btn, select {
-      background: var(--overlay);
-      color: var(--fg);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 120px;
-    }
-    .btn:hover {
-      background: var(--bar);
+    .slider-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
       color: #fff;
     }
-    @media (max-width: 600px) {
-      .slideshow {
-        height: 70vh;
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      gap: 20px;
+      scrollbar-width: none;
+    }
+    .slider::-webkit-scrollbar {
+      display: none;
+    }
+    .slide {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      width: 100%;
+      max-width: 300px;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      transition: transform 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    .slide:hover {
+      transform: scale(1.05);
+      z-index: 1;
+    }
+    .overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 10px;
+      border-radius: 0 0 12px 12px;
+      font-size: 1rem;
+      text-align: center;
+    }
+    .music-control {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      z-index: 999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+    .music-control:hover {
+      background-color: #ff1b2e;
+    }
+    @media (max-width: 768px) {
+      .slider-title {
+        font-size: 1.3rem;
       }
-      .top-bar {
-        flex-direction: column;
-        align-items: stretch;
+      header {
+        font-size: 1.5rem;
       }
-      .btn, select {
-        width: 100%;
-        font-size: 1rem;
-      }
-      .overlay-text {
-        font-size: 1.2rem;
-        padding: 12px;
+    }
+    @media (max-width: 480px) {
+      .slide {
+        max-width: 90%;
       }
     }
   </style>
 </head>
-<body data-theme="dark" oncontextmenu="return false" ontouchstart="">
-  <div class="slideshow"></div>
-  <div class="top-bar">
-    <button class="btn" id="themeToggle">🌞 Hell</button>
-    <select id="languageSelect">
-      <option value="de">🇩🇪 Deutsch</option>
-      <option value="en">🇬🇧 English</option>
-    </select>
+<body oncontextmenu="return false">
+  <header>🎬 Willkommen in der Galerie</header>
+
+  <button class="music-control" onclick="toggleMusic()">🎵 Musik</button>
+
+  <audio id="bgMusic" src="musik.mp3" loop autoplay></audio>
+
+  <div class="gallery-container">
+    <div class="slider-title">Empfohlene Bilder</div>
+    <div class="slider" id="slider">
+      <div class="slide" style="background-image: url('r6.png');">
+        <div class="overlay">Bild 1</div>
+      </div>
+      <div class="slide" style="background-image: url('gta.png');">
+        <div class="overlay">Bild 2</div>
+      </div>
+      <div class="slide" style="background-image: url('bilder/bild3.jpg');">
+        <div class="overlay">Bild 3</div>
+      </div>
+      <div class="slide" style="background-image: url('bilder/bild4.jpg');">
+        <div class="overlay">Bild 4</div>
+      </div>
+      <div class="slide" style="background-image: url('bilder/bild5.jpg');">
+        <div class="overlay">Bild 5</div>
+      </div>
+    </div>
   </div>
+
   <script>
-    document.addEventListener('dragstart', e => e.preventDefault());
+    // Auto-Slider
+    const slider = document.getElementById('slider');
+    let isPaused = false;
+    let index = 0;
+    const slideCount = slider.children.length;
 
-    const translations = {
-      de: { welcome: "Willkommen in der Galerie 💫" },
-      en: { welcome: "Welcome to the gallery 💫" }
-    };
+    function autoScroll() {
+      if (isPaused) return;
+      index = (index + 1) % slideCount;
+      const scrollX = slider.children[index].offsetLeft;
+      slider.scrollTo({ left: scrollX, behavior: 'smooth' });
+    }
 
-    let lang = localStorage.getItem("language") || "de";
-    let theme = localStorage.getItem("theme") || "dark";
-    document.body.setAttribute("data-theme", theme);
+    let interval = setInterval(autoScroll, 3000);
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const images = [
-        { src: "r6.png", text: translations[lang].welcome },
-        { src: "gta.png" },
-        { src: "bilder/bild3.jpg" },
-        { src: "bilder/bild4.jpg" },
-        { src: "bilder/bild5.jpg" },
-      ];
+    slider.addEventListener('mouseenter', () => isPaused = true);
+    slider.addEventListener('mouseleave', () => isPaused = false);
 
-      const container = document.querySelector(".slideshow");
-      const progress = document.createElement("div");
-      progress.classList.add("progress-bar");
-      container.appendChild(progress);
-
-      const countdown = document.createElement("div");
-      countdown.classList.add("countdown");
-      container.appendChild(countdown);
-
-      let current = 0;
-      const slideDuration = 4000;
-      let slides = [];
-
-      images.forEach((img, index) => {
-        const slide = document.createElement("div");
-        slide.classList.add("slide");
-        if (index === 0) slide.classList.add("active");
-        slide.style.backgroundImage = `url('${img.src}')`;
-
-        if (img.text) {
-          const overlay = document.createElement("div");
-          overlay.classList.add("overlay-text");
-          overlay.textContent = img.text;
-          slide.appendChild(overlay);
-        }
-
-        container.appendChild(slide);
-        slides.push(slide);
-      });
-
-      function startProgress() {
-        progress.style.transition = "none";
-        progress.style.width = "0%";
-        setTimeout(() => {
-          progress.style.transition = `width ${slideDuration}ms linear`;
-          progress.style.width = "100%";
-        }, 50);
+    // Musiksteuerung
+    const bgMusic = document.getElementById("bgMusic");
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        bgMusic.play();
+      } else {
+        bgMusic.pause();
       }
+    }
 
-      function startCountdown() {
-        let count = slideDuration / 1000;
-        countdown.textContent = count;
-        const interval = setInterval(() => {
-          count--;
-          countdown.textContent = count;
-          if (count <= 0) clearInterval(interval);
-        }, 1000);
-      }
-
-      function showNextSlide() {
-        slides[current].classList.remove("active");
-        current = (current + 1) % slides.length;
-        slides[current].classList.add("active");
-        startProgress();
-        startCountdown();
-      }
-
-      startProgress();
-      startCountdown();
-      setInterval(showNextSlide, slideDuration);
-
-      document.getElementById("themeToggle").addEventListener("click", () => {
-        theme = theme === "dark" ? "light" : "dark";
-        document.body.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-        document.getElementById("themeToggle").textContent = theme === "dark" ? "🌞 Hell" : "🌙 Dunkel";
-      });
-
-      document.getElementById("languageSelect").value = lang;
-      document.getElementById("languageSelect").addEventListener("change", (e) => {
-        lang = e.target.value;
-        localStorage.setItem("language", lang);
-        slides[0].querySelector(".overlay-text").textContent = translations[lang].welcome;
+    // Automatisch versuchen zu starten (bei Desktop klappt das meist)
+    window.addEventListener("load", () => {
+      bgMusic.volume = 0.4;
+      bgMusic.play().catch(() => {
+        console.log("Autoplay blockiert. Benutzer muss Musik manuell starten.");
       });
     });
   </script>
